@@ -221,30 +221,75 @@ symbolTableTrial.delete("A");
 console.log("symbol table after deleting A: ", symbolTableTrial.hashTable);
   
 // Example usage
-const symbolTable = new SymbolTable();
-/*" the following commented line is used if we're taking the user input from outside
-the terminal but as we are using the terminal for the input we use the uncommented code " */
-// var userPostfixExpression = prompt("Please enter your postfix expression: ");
-// import readline module
-const readline = require("readline");
 
-// create interface for input and output
-const rl = readline.createInterface({
-input: process.stdin,
-output: process.stdout,
-});
-
-// create empty user Postfix Expression
-let userPostfixExpression = "";
-
-// question user to postfix expression
-rl.question("Enter your postfix expression: ", function (string) {
-    userPostfixExpression = string;
-    var postfixExpression = splitExpression(userPostfixExpression);
-    var result = evaluatePostfix(postfixExpression);
-    console.log(userPostfixExpression, " result is ", result);
-// close input stream
-rl.close();
-});
-
+// Function to display the menu
+function displayMenu() {
+    console.log("\nMenu:");
+    console.log("1. Assign a value to a variable");
+    console.log("2. Perform a postfix calculation");
+    console.log("3. Exit");
+  }
   
+  // Function to handle user input for the menu
+  function handleMenuChoice() {
+    rl.question("Enter your choice (1/2/3): ", function (choice) {
+      switch (choice) {
+        case "1":
+          handleVariableAssignment();
+          break;
+        case "2":
+          handlePostfixCalculation();
+          break;
+        case "3":
+          console.log("Exiting program. Goodbye!");
+          rl.close();
+          break;
+        default:
+          console.log("Invalid choice. Please enter 1, 2, or 3.");
+          handleMenuChoice();
+          break;
+      }
+    });
+  }
+  
+  // Function to handle variable assignment
+  function handleVariableAssignment() {
+    rl.question("Enter variable name (A-Z): ", function (variableName) {
+      rl.question("Enter variable value: ", function (variableValue) {
+        symbolTable.insert(variableName, parseFloat(variableValue));
+        console.log(`Assigned ${variableName} = ${variableValue}`);
+        displayMenu();
+        handleMenuChoice();
+      });
+    });
+  }
+  
+  // Function to handle postfix calculation
+  function handlePostfixCalculation() {
+    /*" the following commented line is used if we're taking the user input from outside
+    the terminal but as we are using the terminal for the input we use the uncommented code " */
+    // var userPostfixExpression = prompt("Please enter your postfix expression: ");
+    rl.question("Enter your postfix expression: ", function (userPostfixExpression) {
+      const postfixExpression = splitExpression(userPostfixExpression);
+      const result = evaluatePostfix(postfixExpression);
+      console.log(`${userPostfixExpression} result is ${result}`);
+      displayMenu();
+      handleMenuChoice();
+    });
+  }
+  
+  // Example usage
+  const symbolTable = new SymbolTable();
+  
+  // import readline module
+  const readline = require("readline");
+  
+  // create interface for input and output
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  
+  // Display the initial menu and start handling user choices
+  displayMenu();
+  handleMenuChoice();
